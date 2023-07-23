@@ -1,0 +1,18 @@
+{
+  "name": "reference-archive",
+  "version": "1.0.0",
+  "description": "Extract reference URLs and DOIs from an IEEE-style reference list and download the references to the filesystem.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "author": "jfhr <me@jfhr.de>",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "dependencies": {
+    "mime-db": "^1.52.0",
+    "playwright": "^1.35.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
