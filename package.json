@@ -7,7 +7,7 @@
     "test": "node --test"
   },
   "author": "jfhr <me@jfhr.de>",
-  "license": "AGPL-3.0-only",
+  "license": "CC0-1.0",
   "type": "module",
   "dependencies": {
     "mime-db": "^1.52.0",
