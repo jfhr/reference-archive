@@ -48,13 +48,21 @@ async function saveDOIAsPDFFromSciHub(browser, doi, filename) {
     const page = await browser.newPage();
     try {
         await page.goto(url);
-        await page.waitForLoadState('domcontentloaded');
-        await page.locator('button', { hasText: 'save' }).click();
-        await page.pdf({ path: filename });
+        await page.waitForLoadState('load');
+        const onclick = await page.locator('button', { hasText: 'save' })
+            .getAttribute('onclick');
+        const re = /^location\.href='(?<path>.*)'$/;
+        const match = re.exec(onclick);
+        if (!match) {
+            throw new Error(`Failed to find reference on sci-hub: doi:${doi}`);
+        }
+        const pdfURL = new URL(match.groups.path, 'https://sci-hub.st');
+        pdfURL.searchParams.delete('download');
+        await downloadFile(pdfURL.toString(), filename);
     } catch (e) {
         if (e.name === 'TimeoutError') {
             throw new Error(`TimeoutError while accessing sci-hub - this might be because of a captcha.
-                Alternatively, visit https://sci-hub.st/${doi} and download the file manually.`);
+                Alternatively, visit https://sci-hub.st/${doi} and download the file manually.`, { cause: e });
         }
         throw e;
     } finally {
@@ -236,7 +244,7 @@ async function extractAndSaveURLsWithBrowser(input, targetDirectory, browser) {
         try {
             await saveReference(reference, targetDirectory, browser);
         } catch (e) {
-            console.log(`[${reference.id}]: error: ${e}`);
+            console.log(`[${reference.id}]: ${e}`);
         }
     }
 }
